@@ -65,7 +65,7 @@ class Path
   end
 
   def build_entries(path)
-    path = File.expand_path(path) if @options[:short]
+    path = File.expand_path(path) unless @options[:short]
     dir(path).uniq
   end
   

@@ -1,10 +1,11 @@
 $:.unshift File.expand_path('../lib', __FILE__)
 
 require "rubygems"
+require 'path2/version'
 
 Gem::Specification.new do |gem|
   gem.name          = "path2"
-  gem.version       = "0.2.0"
+  gem.version       = Path::VERSION
   gem.author        = "Bryan Goines"
   gem.summary       = "..."
   gem.email         = "bryann83@gmail.com"
