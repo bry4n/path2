@@ -2,6 +2,6 @@ $:.unshift "lib"
 
 require 'path2'
 
-path = Path("/usr/local/Library")
+path = Path("/usr/local/Library", recursive: false)
 
-p path.find "Formula/bash"
+p path.join("Formula").find "bash"

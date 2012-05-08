@@ -1,10 +1,15 @@
 $:.unshift "lib"
 require "path2"
-require "minitest/autorun"
+require 'rspec'
+require 'mocha'
 require 'fakefs'
 
-%w(.vim lib examples/hello examples/world test/production.log).each do |path|
+%w(.vim lib spec bin).each do |path|
   FileUtils.mkdir_p "/dummy/#{path}"
 end
+
+FileUtils.mkdir_p "/dummy/lib/dummy"
+
+FileUtils.touch "/dummy/lib/dummy/hello.rb"
 
 
