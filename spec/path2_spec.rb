@@ -79,11 +79,13 @@ describe Path do
   end
 
   it "#ignore" do
-
+    path.ignore ".vim"
+    path.entries.should == ["/dummy/lib", "/dummy/spec", "/dummy/bin", "/dummy/reload.rb"]
   end
 
   it "#reject" do
-
+    path.ignore /vim/
+    path.entries.should == ["/dummy/lib", "/dummy/spec", "/dummy/bin", "/dummy/reload.rb"]
   end
 
 end
