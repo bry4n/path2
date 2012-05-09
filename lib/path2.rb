@@ -47,7 +47,7 @@ class Path
 
   def <<(*paths)
     paths.each do |path|
-      entries.concat(Path.new(path).tree).uniq!
+      entries.concat(Path.new(path, @options).tree).uniq!
     end
   end
   alias :push :<<
