@@ -1,13 +1,14 @@
-require 'thread'
+require 'small/array'
 
 class Path
 
   def initialize(*args)
-    @options              = args.last.is_a?(Hash) ? args.pop : {}
+    @options              = args.extract_options!
     @options[:recursive]  ||= false
     @options[:short]      ||= false
-    @root                 = args.first
-    @entries              = build_entries(@root)
+    @root                 = args.shift
+    @entries              = tree
+    args.each &method(:<<)
   end
 
   def current
@@ -15,15 +16,11 @@ class Path
   end
 
   def exists?(path = nil)
-    if path
-      File.exists?([current, path].join("/"))
-    else
-      File.exists?(current)
-    end
+    File.exists?((path ? [current, path].join("/") : current))
   end
 
   def reload
-    Path.new(@root)
+    Path.new(@root, @options)
   end
 
   def find(arg)
@@ -48,27 +45,36 @@ class Path
     @entries ||= []
   end
 
-  def push(*paths)
+  def <<(*paths)
     paths.each do |path|
-      entries.concat(Path.new(path).entries).uniq!
+      entries.concat(Path.new(path).tree).uniq!
     end
   end
+  alias :push :<<
 
-  private
+  def to_s
+    current
+  end
 
-  def dir(path)
-    if @options[:recursive]
-      Dir["#{path}/*"] + Dir["#{path}/**/*"]
-    else
-      Dir["#{path}/*"]
+  def inspect
+    "#<Path @root=\"#{current}\" @entries_size=\"#{entries.size}\">"
+  end
+
+  def tree(path = nil)
+    tree = []
+    raise "#{current} is not directory." unless File.directory?(current)
+    Dir.foreach((path ||= (@options[:short] ? @root : current))) do |entry|
+      next if ['..','.'].include?(entry)
+      entry = File.join(path, entry)
+      if @options[:recursive] && File.directory?(entry)
+        tree << tree(entry)
+      else
+        tree << entry
+      end
     end
+    tree.flatten
   end
 
-  def build_entries(path)
-    path = File.expand_path(path) unless @options[:short]
-    dir(path).uniq
-  end
-  
 end
 
 def Path(*args)

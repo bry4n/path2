@@ -9,7 +9,7 @@ describe Path do
   end
 
   it "#entries" do
-    path.entries.should == ["/dummy/.vim", "/dummy/bin", "/dummy/lib", "/dummy/spec"]
+    path.entries.should == ["/dummy/.vim", "/dummy/lib", "/dummy/spec", "/dummy/bin"]
   end
 
   it "#find" do
@@ -41,17 +41,9 @@ describe Path do
   end
 
   it "#reload" do
-    path.entries.should == ["/dummy/.vim", "/dummy/bin", "/dummy/lib", "/dummy/spec"]
+    path.entries.should == ["/dummy/.vim", "/dummy/lib", "/dummy/spec", "/dummy/bin"] 
     FileUtils.touch "/dummy/reload.rb"
-    path.reload.entries.should == ["/dummy/.vim", "/dummy/bin", "/dummy/lib", "/dummy/reload.rb", "/dummy/spec"]
-  end
-
-  it "#push" do
-    path.reload.entries.should == ["/dummy/.vim", "/dummy/bin", "/dummy/lib", "/dummy/reload.rb", "/dummy/spec"]
-    FileUtils.mkdir_p "/dummy2"
-    FileUtils.mkdir_p "/dummy2/push"
-    path.push "/dummy2"
-    path.entries.should == ["/dummy/.vim", "/dummy/bin", "/dummy/lib", "/dummy/reload.rb", "/dummy/spec", "/dummy2/push"]
+    path.reload.entries.should == ["/dummy/.vim", "/dummy/lib", "/dummy/spec", "/dummy/bin", "/dummy/reload.rb"] 
   end
 
 end

@@ -11,4 +11,6 @@ Gem::Specification.new do |gem|
   gem.email         = "bryann83@gmail.com"
   gem.homepage      = "http://github.com/bry4n/path2"
   gem.files         = Dir['README.md', 'LICENSE', 'lib/**/*.rb']
+  
+  gem.add_dependency 'small'
 end
