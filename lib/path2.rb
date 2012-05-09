@@ -6,9 +6,42 @@ class Path
     @options              = args.extract_options!
     @options[:recursive]  ||= false
     @options[:short]      ||= false
-    @root                 = args.shift
+    @root                 = (args.shift || Dir.pwd)
     @entries              = tree
     args.each &method(:<<)
+  end
+
+  def recursive!
+    @options[:recursive] = true
+    reload!
+  end
+
+  def size
+    directory? ? entries.size : File.size(current)
+  end
+
+  def file?
+    !directory?
+  end
+
+  def stat
+    File.stat(current)
+  end
+
+  def directory?
+    File.directory?(current)
+  end 
+
+  def dirname
+    directory? ? current : File.dirname(current)
+  end
+
+  def basename
+    File.basename(current)
+  end
+
+  def split
+    File.split(current)
   end
 
   def current
@@ -19,6 +52,10 @@ class Path
     File.exists?((path ? [current, path].join("/") : current))
   end
 
+  def reload!
+    @entries = tree
+  end
+
   def reload
     Path.new(@root, @options)
   end
@@ -26,44 +63,52 @@ class Path
   def find(arg)
     grep(/#{arg}/).first
   end
+  
+  def grep(pattern)
+    entries.grep(pattern)
+  end
 
   def join(path)
     Path.new([@root, path].join("/"), @options)
   end
 
   def walk(path)
-    yield Path.new([@root, path].join("/"), @options)
+    yield join(path)
   ensure
     self
-  end
-
-  def grep(pattern)
-    entries.grep(pattern)
   end
 
   def entries
     @entries ||= []
   end
 
-  def <<(*paths)
+  def push(*paths)
     paths.each do |path|
       entries.concat(Path.new(path, @options).tree).uniq!
     end
   end
-  alias :push :<<
+  alias :<< :push
+
+  def ignore(path)
+    reject(/#{path}/)
+  end
+
+  def reject(pattern)
+    @entries = (entries - grep(pattern))
+    self
+  end
 
   def to_s
     current
   end
 
   def inspect
-    "#<Path @root=\"#{current}\" @entries_size=\"#{entries.size}\">"
+    "#<Path @root=\"#{current}\" >"
   end
 
   def tree(path = nil)
     tree = []
-    raise "#{current} is not directory." unless File.directory?(current)
-    Dir.foreach((path ||= (@options[:short] ? @root : current))) do |entry|
+    Dir.foreach((path ||= (@options[:short] ? @root : dirname))) do |entry|
       next if ['..','.'].include?(entry)
       entry = File.join(path, entry)
       if @options[:recursive] && File.directory?(entry)

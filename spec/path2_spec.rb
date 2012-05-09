@@ -3,7 +3,35 @@ require File.expand_path("../spec_helper", __FILE__)
 describe Path do
 
   let(:path) { Path("/dummy") }
-  
+
+  it "#size" do
+    path.size.should == 4
+  end
+
+  it "#file?" do
+    path.file?.should be_false
+  end
+
+  it "#directory?" do
+    path.directory?.should be_true
+  end
+
+  it "#stat" do
+    path.stat.should be_kind_of(File::Stat)
+  end
+
+  it "#dirname" do
+    path.dirname.should == path.current
+  end
+
+  it "#basename" do
+    path.basename.should == "dummy"
+  end
+
+  it "#split" do
+    path.split.should == ["/", "dummy"]
+  end
+
   it "#current" do
     path.current.should == "/dummy"
   end
@@ -44,6 +72,18 @@ describe Path do
     path.entries.should == ["/dummy/.vim", "/dummy/lib", "/dummy/spec", "/dummy/bin"] 
     FileUtils.touch "/dummy/reload.rb"
     path.reload.entries.should == ["/dummy/.vim", "/dummy/lib", "/dummy/spec", "/dummy/bin", "/dummy/reload.rb"] 
+  end
+
+  it "#tree" do
+    path.tree.should == ["/dummy/.vim", "/dummy/lib", "/dummy/spec", "/dummy/bin", "/dummy/reload.rb"]
+  end
+
+  it "#ignore" do
+
+  end
+
+  it "#reject" do
+
   end
 
 end

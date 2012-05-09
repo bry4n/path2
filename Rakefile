@@ -7,3 +7,7 @@ RSpec::Core::RakeTask.new do |t|
   t.pattern = "spec/*_spec.rb"
 end
 
+desc "Pry"
+task :pry do
+  sh "pry -r ./lib/path2"
+end
