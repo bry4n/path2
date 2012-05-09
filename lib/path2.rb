@@ -49,12 +49,8 @@ class Path
   end
 
   def push(*paths)
-    entries.concat(build_entries(*paths)).uniq!
-  end
-
-  def pop(*args)
-    args.each do |x|
-      entries.delete_if {|y| File.expand_path(x) == y }
+    paths.each do |path|
+      entries.concat(Path.new(path).entries).uniq!
     end
   end
 

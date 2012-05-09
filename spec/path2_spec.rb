@@ -40,4 +40,18 @@ describe Path do
     path.exists?("blah").should be_false
   end
 
+  it "#reload" do
+    path.entries.should == ["/dummy/.vim", "/dummy/bin", "/dummy/lib", "/dummy/spec"]
+    FileUtils.touch "/dummy/reload.rb"
+    path.reload.entries.should == ["/dummy/.vim", "/dummy/bin", "/dummy/lib", "/dummy/reload.rb", "/dummy/spec"]
+  end
+
+  it "#push" do
+    path.reload.entries.should == ["/dummy/.vim", "/dummy/bin", "/dummy/lib", "/dummy/reload.rb", "/dummy/spec"]
+    FileUtils.mkdir_p "/dummy2"
+    FileUtils.mkdir_p "/dummy2/push"
+    path.push "/dummy2"
+    path.entries.should == ["/dummy/.vim", "/dummy/bin", "/dummy/lib", "/dummy/reload.rb", "/dummy/spec", "/dummy2/push"]
+  end
+
 end
