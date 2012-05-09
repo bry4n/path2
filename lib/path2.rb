@@ -22,6 +22,10 @@ class Path
     end
   end
 
+  def reload
+    Path.new(@root)
+  end
+
   def find(arg)
     grep(/#{arg}/).first
   end
