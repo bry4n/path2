@@ -32,7 +32,7 @@ benchmark do |b|
     end
   end
 
-  b.report("path#walk (non-recursive)") do
+  b.report("path2#walk (non-recursive)") do
     run 100_000 do
       path.walk "lib" do |path|
         path.find "path2.rb"
@@ -40,7 +40,7 @@ benchmark do |b|
     end
   end
 
-  b.report("path#walk (recursive)") do
+  b.report("path2#walk (recursive)") do
     run 100_000 do
       path2.walk "lib" do |path|
         path2.find "path2.rb"
@@ -48,13 +48,13 @@ benchmark do |b|
     end
   end
 
-  b.report("path#join (non-recursive)") do
+  b.report("path2#join (non-recursive)") do
     run 100_000 do
       path.join("lib").find "path2.rb"
     end
   end
 
-  b.report("path#join (recursive)") do
+  b.report("path2#join (recursive)") do
     run 100_000 do
       path2.join("lib").find "path2.rb"
     end

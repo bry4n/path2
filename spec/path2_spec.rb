@@ -41,7 +41,7 @@ describe Path do
   end
 
   it "#find" do
-    path.find("spec").should == "/dummy/spec"
+    path.find("spec").should == ["/dummy/spec"]
   end
 
   it "#grep" do

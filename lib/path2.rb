@@ -3,16 +3,21 @@ require 'small/array'
 class Path
 
   def initialize(*args)
-    @options              = args.extract_options!
-    @options[:recursive]  ||= false
-    @options[:short]      ||= false
-    @root                 = (args.shift || Dir.pwd)
-    @entries              = tree
+    @options                = args.extract_options!
+    @options[:recursive]    ||= false
+    @options[:expand_path]  ||= false
+    @root                   = (args.shift || Dir.pwd)
+    @entries                = tree
     args.each &method(:<<)
   end
 
   def recursive!
     @options[:recursive] = true
+    reload!
+  end
+  
+  def expand_path!
+    @options[:expand_path] = true
     reload!
   end
 
@@ -61,7 +66,7 @@ class Path
   end
 
   def find(arg)
-    grep(/#{arg}/).first
+    grep(/#{arg}/)
   end
   
   def grep(pattern)
@@ -108,7 +113,7 @@ class Path
 
   def tree(path = nil)
     tree = []
-    Dir.foreach((path ||= (@options[:short] ? @root : dirname))) do |entry|
+    Dir.foreach((path ||= (!@options[:expand_path] ? @root : dirname))) do |entry|
       next if ['..','.'].include?(entry)
       entry = File.join(path, entry)
       if @options[:recursive] && File.directory?(entry)

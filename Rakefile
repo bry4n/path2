@@ -11,3 +11,8 @@ desc "Pry"
 task :pry do
   sh "pry -r ./lib/path2"
 end
+
+desc "benchmark"
+task :benchmark do
+  sh 'ruby benchmarks/*.rb'
+end
